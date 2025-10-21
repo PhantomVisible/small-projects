@@ -1,18 +1,54 @@
 package BankAccount;
 import java.util.Scanner;
 
-public class Main {
+public class Main extends BankAccount {
+
+    public Main(String accountNumber, double balance) {
+        super(accountNumber, balance);
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        BankAccount myAccount = new BankAccount("MA123456", 9999999.0);
-        System.out.println("Initial Bank balance: " + myAccount.getBalance());
+        System.out.println("Welcome to the Bank System 💰");
+        System.out.println("-----------------------------");
 
-        System.out.print("Would you like to deposit (+) or withdraw (-)? (type '+' or '-'): ");
-        String choice = scanner.nextLine();
 
-        System.out.print("Enter the amount: ");
-        double amount = scanner.nextDouble();
+        TransactionManager manager = new TransactionManager();
+
+        SavingsAccount savings = new SavingsAccount("SA-001", 9999999.0);
+        CheckingAccount checking = new CheckingAccount("CA-002", 3000);
+        manager.addAccount(savings);
+        manager.addAccount(checking);
+
+
+        while (true) {
+
+            System.out.print("\nEnter account number (or 'Exit' to quit): ");
+            String accountChoice = scanner.nextLine();
+
+            if (accountChoice.equalsIgnoreCase("Exit")) {
+                System.out.println("Goodbye! 👋");
+                break;
+            }
+
+            // Check if account exists using TransactionManager
+            BankAccount myAccount = manager.findAccount(accountChoice);
+
+            if (myAccount == null) {
+                System.out.println("\nPlease choose from the following:");
+                manager.showAllAccounts();
+                continue; // go back to start of loop
+            }
+
+            System.out.println("\nCurrent balance for " + myAccount.getAccountNumber() + ": $" + myAccount.getBalance());
+
+            System.out.print("Would you like to deposit (+) or withdraw (-)? (type '+' or '-'): ");
+            String choice = scanner.nextLine();
+
+            System.out.print("Enter the amount: ");
+            double amount = scanner.nextDouble();
+            scanner.nextLine();
 
             if (choice.equalsIgnoreCase("+")) {
                 myAccount.deposit(amount);
@@ -23,7 +59,8 @@ public class Main {
             }
 
 
-        System.out.println("Balance after operation: " + myAccount.getBalance());
+            System.out.println("Balance after operation: " + myAccount.getBalance());
+        }
 
     }
 }
